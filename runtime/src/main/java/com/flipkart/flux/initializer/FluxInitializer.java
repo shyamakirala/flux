@@ -141,4 +141,21 @@ public class FluxInitializer {
         migrationsRunner.migrate(dbName);
     }
 
+    private void testFunctionGithubTools() {
+        logger.debug("loading flux runtime container");
+        final ConfigModule configModule = new ConfigModule();
+        fluxRuntimeContainer.modules(
+                configModule,
+                new HibernateModule(),
+                new ContainerModule(),
+                new DeploymentUnitModule(),
+                new AkkaModule(),
+                new TaskModule(),
+                new FluxClientInterceptorModule()
+        );
+        //scans package com.flipkart.flux for polyguice specific annotations like @Bindable, @Component etc.
+        fluxRuntimeContainer.scanPackage("com.flipkart.flux");
+        fluxRuntimeContainer.registerConfigurationProvider(configModule.getConfigProvider());
+        fluxRuntimeContainer.prepare();
+    }
 }
